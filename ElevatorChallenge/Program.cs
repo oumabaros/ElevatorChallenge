@@ -18,7 +18,7 @@ namespace ElevatorChallenge
             int PeopleWaiting;
             Elevator Elvtr;
             Floor Fl = new Floor();
-            int NumberOfElevators;
+            int NumberOfElevators=1;
             string ElevatorInput;
             string ElevatorIdInput;
             int ElevatorId;
@@ -139,10 +139,8 @@ namespace ElevatorChallenge
                         {
                             Console.WriteLine("Elevator ID: {0}",SelectedElevator);
                             Console.WriteLine("Number Of Elevators: {0}", Elvtrs.Count);
-                            Elevator Elv = new Elevator(SelectedElevator, MaxNumberOfFloors);
-                            /*Elevator Elv= (from elv in Elvtrs
-                                          where elv.ElevatorId ==SelectedElevator
-                                          select elv);*/
+                            //Elevator Elv = new Elevator(SelectedElevator, MaxNumberOfFloors);
+                            Elevator Elv= Elvtrs.Where(a=>a.ElevatorId==SelectedElevator).FirstOrDefault();
                             Elv.Call(Destination,CurrentFloor);
                             Elv.InitiateMove(Destination);
                             Console.WriteLine("Current Floor: {0}", Elv.CurrentFloor);
@@ -154,7 +152,7 @@ namespace ElevatorChallenge
                                 Console.Write("Floor Number: {0}", el.CurrentFloor);
                                 Console.WriteLine("");
                             }
-                    }
+                        }
                     }
                     else if (input == QUIT)
                     {
