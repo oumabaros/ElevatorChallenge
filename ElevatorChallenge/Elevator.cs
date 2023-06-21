@@ -31,7 +31,7 @@ namespace ElevatorChallenge
             CurrentFloor = 1;
         }
                
-        public bool Call(int floor,int currFloor)
+        public bool Call(int floor,int currFloor,int elevatorId)
         {
             if (floor > TopFloor||floor<1)
             {
@@ -43,29 +43,29 @@ namespace ElevatorChallenge
                 Status = ElevatorState.Idle;
                 CurrentFloor = currFloor;
                 FloorReady[floor] = false;
-                Console.WriteLine("Elevator being called to {0}", floor);
+                Console.WriteLine("Elevator: {0} being called to {1}",elevatorId, floor);
                 return true;
             }
             
         }
 
-        private void Halt(int floor)
+        private void Halt(int floor,int elevatorId)
         {
             Status = ElevatorState.Idle;
             CurrentFloor = floor;
             FloorReady[floor] = false;
-            Console.WriteLine("Elevator Stopped at floor {0}", floor);
+            Console.WriteLine("Elevator: {0} stopped at floor {1}",elevatorId, floor);
         }
 
-        private void Down(int floor)
+        private void Down(int floor, int elevatorId)
         {
             for (int i = CurrentFloor; i >= 1; i--)
             {
                 if (FloorReady[i])
                 {
-                    Console.WriteLine("Descending to floor number: {0}", floor);
+                    Console.WriteLine("Elevator: {0} descending to floor number: {1}",elevatorId, floor);
                     Status = ElevatorState.Down;
-                    Halt(floor);
+                    Halt(floor,elevatorId);
                 }
                 else
                 {
@@ -78,15 +78,15 @@ namespace ElevatorChallenge
             Console.WriteLine("Waiting..");
         }
 
-        private void Up(int floor)
+        private void Up(int floor, int elevatorId)
         {
             for (int i = CurrentFloor; i <= TopFloor; i++)
             {
                 if (FloorReady[i])
                 {
                     Status = ElevatorState.Up;
-                    Console.WriteLine("Ascending to floor number {0}: ", floor);
-                    Halt(floor);
+                    Console.WriteLine("Elevator: {0} ascending to floor number {1}: ",elevatorId, floor);
+                    Halt(floor, elevatorId);
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace ElevatorChallenge
             Console.WriteLine("That's our current floor");
         }
 
-        public void InitiateMove(int floor)
+        public void InitiateMove(int floor,int elevatorId)
         {
             if (floor > TopFloor)
             {
@@ -118,20 +118,20 @@ namespace ElevatorChallenge
             {
 
                 case ElevatorState.Down:
-                    Down(floor);
+                    Down(floor,elevatorId);
                     break;
 
                 case ElevatorState.Idle:
                     if (CurrentFloor < floor)
-                        Up(floor);
+                        Up(floor,elevatorId);
                     else if (CurrentFloor == floor)
                         MoveNot();
                     else
-                        Down(floor);
+                        Down(floor,elevatorId);
                     break;
 
                 case ElevatorState.Up:
-                    Up(floor);
+                    Up(floor,elevatorId);
                     break;
 
                 default:

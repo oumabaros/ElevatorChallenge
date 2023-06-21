@@ -66,13 +66,17 @@ namespace ElevatorChallenge
                     goto Start;
                 }
 
-                for(int i = 0; i < NumberOfElevators; i++)
+                Random rnd = new Random();
+                for (int i = 0; i < NumberOfElevators; i++)
                 {
                     Elvtr = new Elevator(i+1,Flrs);
+                    int people = rnd.Next(Elvtr.ElevatorCapacity);
+                    Elvtr.PeopleInElevator = people;
                     Elvtrs.Add(Elvtr);
                 }
+                
             }
-
+            
             string input;
 
             StartFloor:
@@ -137,12 +141,13 @@ namespace ElevatorChallenge
                         }
                         else
                         {
-                            Console.WriteLine("Elevator ID: {0}",SelectedElevator);
-                            Console.WriteLine("Number Of Elevators: {0}", Elvtrs.Count);
+                            //Console.WriteLine("Elevator ID: {0}",SelectedElevator);
+                            //Console.WriteLine("Number Of Elevators: {0}", Elvtrs.Count);
                             //Elevator Elv = new Elevator(SelectedElevator, MaxNumberOfFloors);
                             Elevator Elv= Elvtrs.Where(a=>a.ElevatorId==SelectedElevator).FirstOrDefault();
-                            Elv.Call(Destination,CurrentFloor);
-                            Elv.InitiateMove(Destination);
+                            Elv.PeopleInElevator++;
+                            Elv.Call(Destination,CurrentFloor,SelectedElevator);
+                            Elv.InitiateMove(Destination,SelectedElevator);
                             Console.WriteLine("Current Floor: {0}", Elv.CurrentFloor);
 
                             foreach (Elevator el in Elvtrs)
@@ -150,6 +155,8 @@ namespace ElevatorChallenge
                                 Console.Write("Elevator Number: {0}", el.ElevatorId);
                                 Console.Write(" ");
                                 Console.Write("Floor Number: {0}", el.CurrentFloor);
+                                Console.Write(" ");
+                                Console.Write("People In Elevator: {0}", el.PeopleInElevator);
                                 Console.WriteLine("");
                             }
                         }
@@ -164,5 +171,21 @@ namespace ElevatorChallenge
                     }
             }
         }
+
+        public void RandomizeSelection(List<Elevator> Elvtrs)
+        {
+            Random rnd = new Random();
+            for (int i = 0; i < Elvtrs.Count; i++)
+            {
+                Elevator Elv = Elvtrs.Where(a => a.ElevatorId == i++).FirstOrDefault();
+                int dest = rnd.Next(1, Elvtrs.Count + 1);
+                int currFloor = rnd.Next(1, Elvtrs.Count + 1);
+                int selElevator = rnd.Next(1, Elvtrs.Count + 1);
+                Elv.Call(dest, currFloor, selElevator);
+                Elv.InitiateMove(dest, selElevator);
+            }
+
+        }
+        
     }
 }
