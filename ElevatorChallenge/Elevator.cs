@@ -9,61 +9,28 @@ namespace ElevatorChallenge
 {
     public class Elevator
     {
-        private bool[] FloorReady;
-        public int CurrentFloor = 0;
-        public int TopFloor;
+        private bool[] FloorReady { get; set; }
+        public int CurrentFloor = 1;
+        public int TopFloor { get; set; }
         public ElevatorState Status = ElevatorState.Idle;
-        public int ElevatorId;
+        public int ElevatorId { get; set; }
         public int ElevatorCapacity = 10;
-
-        //public int CurrentFloor { get; set; }
-
-        public List<int> PeopleInElevator { get; set; }
-             
-
+        public int PeopleInElevator { get; set; }
         public enum ElevatorState
         {
             Idle = 0,
             Up = 1,
             Down = -1
         }
-
-        public ElevatorState CurrentElevatorState { get; set; }
-
         public Elevator(int Id,int NumberOfFloors = 10)
         {
             FloorReady = new bool[NumberOfFloors + 1];
             TopFloor = NumberOfFloors;
             ElevatorId = Id;
+            Status = ElevatorState.Idle;
+            CurrentFloor = 1;
         }
-        /*public Elevator_(int[] ElevatorFloorsServedByElevator, int E_Capacity)
-        {
-            FloorsServedByElevator = ElevatorFloorsServedByElevator;
-            ElevatorCapacity = E_Capacity;
-            CurrentFloor = FloorsServedByElevator[0];
-            PeopleInElevator = new List<int>();
-            CurrentElevatorState = ElevatorState.Idle;
-            StopFloorRequest = new PriorityQueue<Person, Person>(CompareFloorRequests);
-            CompareFloorRequests.FloorsServedByElevator = FloorsServedByElevator.Count();
-        }*/
-
-        
-        /**
-		  * Display current people in elevator
-		*/
-        public string DisplayPeopleInElevator()
-        {
-            StringBuilder CurrentPeopleInElevator = new StringBuilder("(");
-            foreach (int Person in PeopleInElevator)
-            {
-                CurrentPeopleInElevator.Append(Person + " ");
-            }
-            if (CurrentPeopleInElevator.Length > 1)
-                CurrentPeopleInElevator.Remove(CurrentPeopleInElevator.Length - 1, 1);
-            CurrentPeopleInElevator.Append(")");
-            return CurrentPeopleInElevator.ToString();
-        }
-
+               
         public bool Call(int floor,int currFloor)
         {
             if (floor > TopFloor||floor<1)
@@ -82,15 +49,15 @@ namespace ElevatorChallenge
             
         }
 
-        private void Stop(int floor)
+        private void Halt(int floor)
         {
             Status = ElevatorState.Idle;
             CurrentFloor = floor;
             FloorReady[floor] = false;
-            Console.WriteLine("Stopped at floor {0}", floor);
+            Console.WriteLine("Elevator Stopped at floor {0}", floor);
         }
 
-        private void Descend(int floor)
+        private void Down(int floor)
         {
             for (int i = CurrentFloor; i >= 1; i--)
             {
@@ -98,7 +65,7 @@ namespace ElevatorChallenge
                 {
                     Console.WriteLine("Descending to floor number: {0}", floor);
                     Status = ElevatorState.Down;
-                    Stop(floor);
+                    Halt(floor);
                 }
                 else
                 {
@@ -111,7 +78,7 @@ namespace ElevatorChallenge
             Console.WriteLine("Waiting..");
         }
 
-        private void Ascend(int floor)
+        private void Up(int floor)
         {
             for (int i = CurrentFloor; i <= TopFloor; i++)
             {
@@ -119,7 +86,7 @@ namespace ElevatorChallenge
                 {
                     Status = ElevatorState.Up;
                     Console.WriteLine("Ascending to floor number {0}: ", floor);
-                    Stop(floor);
+                    Halt(floor);
                 }
                 else
                 {
@@ -132,12 +99,12 @@ namespace ElevatorChallenge
             Console.WriteLine("Waiting..");
         }
 
-        void StayPut()
+        void MoveNot()
         {
             Console.WriteLine("That's our current floor");
         }
 
-        public void FloorPress(int floor)
+        public void InitiateMove(int floor)
         {
             if (floor > TopFloor)
             {
@@ -151,20 +118,20 @@ namespace ElevatorChallenge
             {
 
                 case ElevatorState.Down:
-                    Descend(floor);
+                    Down(floor);
                     break;
 
                 case ElevatorState.Idle:
                     if (CurrentFloor < floor)
-                        Ascend(floor);
+                        Up(floor);
                     else if (CurrentFloor == floor)
-                        StayPut();
+                        MoveNot();
                     else
-                        Descend(floor);
+                        Down(floor);
                     break;
 
                 case ElevatorState.Up:
-                    Ascend(floor);
+                    Up(floor);
                     break;
 
                 default:
@@ -173,13 +140,7 @@ namespace ElevatorChallenge
 
 
         }
-
-        public enum ElevatorStatus
-        {
-            UP,
-            STOPPED,
-            DOWN
-        }
+                
     }
 
 }

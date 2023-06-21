@@ -37,7 +37,6 @@ namespace ElevatorChallenge
                 FloorInput = Console.ReadLine();
                 if (Int32.TryParse(FloorInput, out Flrs))
                 {
-                    //Elvtr = new Elevator(Flr);
                     MaxNumberOfFloors = Flrs;
                     for (int i = 0; i < Flrs; i++)
                     {
@@ -89,9 +88,12 @@ namespace ElevatorChallenge
                     else
                     {
                         CurrentFloor = Flr;
-                        for (int i = 0; i < Elvtrs.Count; i++)
+                        foreach (Elevator el in Elvtrs)
                         {
-                            Console.WriteLine("Elevator Number: {0}", i + 1);
+                            Console.Write("Elevator Number: {0}", el.ElevatorId);
+                            Console.Write(" ");
+                            Console.Write("Floor Number: {0}",el.CurrentFloor);
+                            Console.WriteLine("");
                         }
                         ElevatorSelect:
                             Console.WriteLine("Select An Elevator:");
@@ -136,10 +138,23 @@ namespace ElevatorChallenge
                         else
                         {
                             Console.WriteLine("Elevator ID: {0}",SelectedElevator);
+                            Console.WriteLine("Number Of Elevators: {0}", Elvtrs.Count);
                             Elevator Elv = new Elevator(SelectedElevator, MaxNumberOfFloors);
+                            /*Elevator Elv= (from elv in Elvtrs
+                                          where elv.ElevatorId ==SelectedElevator
+                                          select elv);*/
                             Elv.Call(Destination,CurrentFloor);
-                            Elv.FloorPress(Destination);
-                        }
+                            Elv.InitiateMove(Destination);
+                            Console.WriteLine("Current Floor: {0}", Elv.CurrentFloor);
+
+                            foreach (Elevator el in Elvtrs)
+                            {
+                                Console.Write("Elevator Number: {0}", el.ElevatorId);
+                                Console.Write(" ");
+                                Console.Write("Floor Number: {0}", el.CurrentFloor);
+                                Console.WriteLine("");
+                            }
+                    }
                     }
                     else if (input == QUIT)
                     {
