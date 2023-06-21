@@ -7,7 +7,7 @@ namespace ElevatorChallenge
     public class Program
     {
         private const string QUIT = "q";
-
+        
         public static void Main(string[] args)
         {
         
@@ -16,13 +16,36 @@ namespace ElevatorChallenge
             Console.WriteLine("How many floors does the building have?");
 
             int floor;
-            string floorInput; 
+            string floorInput;
+            string peopleWaitingInput;
+            int peopleWaiting;
             Elevator elevator;
+            Floor fl = new Floor();
 
             floorInput = Console.ReadLine();
 
             if (Int32.TryParse(floorInput, out floor))
+            {
                 elevator = new Elevator(floor);
+                for(int i = 0; i < floor; i++)
+                {
+                    fl.FloorId=i+1;
+                    Console.WriteLine("Enter the number of people waiting in floor {0}",i+1);
+                    peopleWaitingInput=Console.ReadLine();
+                    if (Int32.TryParse(peopleWaitingInput, out peopleWaiting))
+                    {
+                        fl.NumberOfPeopleWaiting=peopleWaiting;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The value entered is not valid!");
+                        Console.Beep();
+                        Thread.Sleep(2000);
+                        Console.Clear();
+                        goto Start;
+                    }
+                }
+            }
             else
             {
                 Console.WriteLine("The value entered is not valid!");
