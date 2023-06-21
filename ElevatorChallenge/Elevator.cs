@@ -9,12 +9,11 @@ namespace ElevatorChallenge
 {
     public class Elevator
     {
-        private bool[] floorReady;
-        public int CurrentFloor = 1;
-        public int topfloor;
+        private bool[] FloorReady;
+        public int CurrentFloor = 0;
+        public int TopFloor;
         public ElevatorState Status = ElevatorState.Idle;
-
-
+        public int ElevatorId;
         public int ElevatorCapacity = 10;
 
         //public int CurrentFloor { get; set; }
@@ -31,10 +30,11 @@ namespace ElevatorChallenge
 
         public ElevatorState CurrentElevatorState { get; set; }
 
-        public Elevator(int NumberOfFloors = 10)
+        public Elevator(int Id,int NumberOfFloors = 10)
         {
-            floorReady = new bool[NumberOfFloors + 1];
-            topfloor = NumberOfFloors;
+            FloorReady = new bool[NumberOfFloors + 1];
+            TopFloor = NumberOfFloors;
+            ElevatorId = Id;
         }
         /*public Elevator_(int[] ElevatorFloorsServedByElevator, int E_Capacity)
         {
@@ -64,18 +64,18 @@ namespace ElevatorChallenge
             return CurrentPeopleInElevator.ToString();
         }
 
-        public bool Call(int floor)
+        public bool Call(int floor,int currFloor)
         {
-            if (floor > topfloor||floor<1)
+            if (floor > TopFloor||floor<1)
             {
-                Console.WriteLine("We only have {0} floors. The Floor given is invalid.", topfloor);
+                Console.WriteLine("We only have {0} floors. The Floor given is invalid.", TopFloor);
                 return false;
             }
             else
             {
                 Status = ElevatorState.Idle;
-                CurrentFloor = floor;
-                floorReady[floor] = false;
+                CurrentFloor = currFloor;
+                FloorReady[floor] = false;
                 Console.WriteLine("Elevator being called to {0}", floor);
                 return true;
             }
@@ -86,7 +86,7 @@ namespace ElevatorChallenge
         {
             Status = ElevatorState.Idle;
             CurrentFloor = floor;
-            floorReady[floor] = false;
+            FloorReady[floor] = false;
             Console.WriteLine("Stopped at floor {0}", floor);
         }
 
@@ -94,10 +94,17 @@ namespace ElevatorChallenge
         {
             for (int i = CurrentFloor; i >= 1; i--)
             {
-                if (floorReady[i])
+                if (FloorReady[i])
+                {
+                    Console.WriteLine("Descending to floor number: {0}", floor);
+                    Status = ElevatorState.Down;
                     Stop(floor);
+                }
                 else
+                {
                     continue;
+                }
+                    
             }
 
             Status = ElevatorState.Idle;
@@ -106,12 +113,19 @@ namespace ElevatorChallenge
 
         private void Ascend(int floor)
         {
-            for (int i = CurrentFloor; i <= topfloor; i++)
+            for (int i = CurrentFloor; i <= TopFloor; i++)
             {
-                if (floorReady[i])
+                if (FloorReady[i])
+                {
+                    Status = ElevatorState.Up;
+                    Console.WriteLine("Ascending to floor number {0}: ", floor);
                     Stop(floor);
+                }
                 else
+                {
                     continue;
+                }
+                   
             }
 
             Status = ElevatorState.Idle;
@@ -125,13 +139,13 @@ namespace ElevatorChallenge
 
         public void FloorPress(int floor)
         {
-            if (floor > topfloor)
+            if (floor > TopFloor)
             {
-                Console.WriteLine("We only have {0} floors", topfloor);
+                Console.WriteLine("We only have {0} floors", TopFloor);
                 return;
             }
 
-            floorReady[floor] = true;
+            FloorReady[floor] = true;
 
             switch (Status)
             {

@@ -10,49 +10,68 @@ namespace ElevatorChallenge
         
         public static void Main(string[] args)
         {
-        
-        Start:
-            
-            Console.WriteLine("How many floors does the building have?");
+            int Flr;
+            int Destination;
+            int Flrs=1;
+            string FloorInput;
+            string PeopleWaitingInput;
+            int PeopleWaiting;
+            Elevator Elvtr;
+            Floor Fl = new Floor();
+            int NumberOfElevators;
+            string ElevatorInput;
+            string ElevatorIdInput;
+            int ElevatorId;
+            int SelectedElevator=1;
+            int MaxNumberOfFloors=1;
+            int CurrentFloor = 1;
+            List<Elevator> Elvtrs=new List<Elevator>();
 
-            int floor;
-            string floorInput;
-            string peopleWaitingInput;
-            int peopleWaiting;
-            Elevator elevator;
-            Floor fl = new Floor();
+            Console.WriteLine("How many elevators does the building have?");
+            ElevatorInput = Console.ReadLine();
 
-            floorInput = Console.ReadLine();
-
-            if (Int32.TryParse(floorInput, out floor))
+            if (Int32.TryParse(ElevatorInput, out NumberOfElevators))
             {
-                elevator = new Elevator(floor);
-                for(int i = 0; i < floor; i++)
+            Start:
+                Console.WriteLine("How many floors does the building have?");
+                FloorInput = Console.ReadLine();
+                if (Int32.TryParse(FloorInput, out Flrs))
                 {
-                    fl.FloorId=i+1;
-                    Console.WriteLine("Enter the number of people waiting in floor {0}",i+1);
-                    peopleWaitingInput=Console.ReadLine();
-                    if (Int32.TryParse(peopleWaitingInput, out peopleWaiting))
+                    //Elvtr = new Elevator(Flr);
+                    MaxNumberOfFloors = Flrs;
+                    for (int i = 0; i < Flrs; i++)
                     {
-                        fl.NumberOfPeopleWaiting=peopleWaiting;
-                    }
-                    else
-                    {
-                        Console.WriteLine("The value entered is not valid!");
-                        Console.Beep();
-                        Thread.Sleep(2000);
-                        Console.Clear();
-                        goto Start;
+                        Fl.FloorId = i + 1;
+                        Console.WriteLine("Enter the number of people waiting in floor {0}", i + 1);
+                        PeopleWaitingInput = Console.ReadLine();
+                        if (Int32.TryParse(PeopleWaitingInput, out PeopleWaiting))
+                        {
+                            Fl.NumberOfPeopleWaiting = PeopleWaiting;
+                        }
+                        else
+                        {
+                            Console.WriteLine("The value entered is not valid!");
+                            Console.Beep();
+                            Thread.Sleep(2000);
+                            Console.Clear();
+                            goto Start;
+                        }
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine("The value entered is not valid!");
-                Console.Beep();
-                Thread.Sleep(2000);
-                Console.Clear();
-                goto Start;
+                else
+                {
+                    Console.WriteLine("The value entered is not valid!");
+                    Console.Beep();
+                    Thread.Sleep(2000);
+                    Console.Clear();
+                    goto Start;
+                }
+
+                for(int i = 0; i < NumberOfElevators; i++)
+                {
+                    Elvtr = new Elevator(i+1,Flrs);
+                    Elvtrs.Add(Elvtr);
+                }
             }
 
             string input;
@@ -60,12 +79,39 @@ namespace ElevatorChallenge
             StartFloor:
                 Console.WriteLine("Which floor are you in?");
                 input = Console.ReadLine();
-                if (Int32.TryParse(input, out floor))
+                if (Int32.TryParse(input, out Flr))
                 {
-                    if (!elevator.Call(floor))
+                    if(Flr>Flrs || Flr < 1)
                     {
-                    goto StartFloor;
+                        Console.WriteLine("Invalid Floor Selection. Select a value between 1 and {0}",Flrs);
+                        goto StartFloor;
                     }
+                    else
+                    {
+                        CurrentFloor = Flr;
+                        for (int i = 0; i < Elvtrs.Count; i++)
+                        {
+                            Console.WriteLine("Elevator Number: {0}", i + 1);
+                        }
+                        ElevatorSelect:
+                            Console.WriteLine("Select An Elevator:");
+                            ElevatorIdInput = Console.ReadLine();
+                            if (Int32.TryParse(ElevatorIdInput, out ElevatorId))
+                            {
+
+                                if (ElevatorId > Elvtrs.Count || ElevatorId < 1)
+                                {
+                                    Console.WriteLine("Invalid Elevator Selection. Select values from 1 to {0}", Elvtrs.Count);
+                                    goto ElevatorSelect;
+                                }
+                                else
+                                {
+                                    SelectedElevator = ElevatorId;
+                                    Console.WriteLine("Selected Elevator Number: {0}", SelectedElevator);
+                                    Console.WriteLine("Maximum Floors: {0}", MaxNumberOfFloors);
+                                }
+                            }
+                        }
                 }
                 
                 else if (input == QUIT)
@@ -77,19 +123,33 @@ namespace ElevatorChallenge
 
             while (input != QUIT)
             {
-                Console.WriteLine("Which floor are you going to?");
-
-                input = Console.ReadLine();
-                if (Int32.TryParse(input, out floor))
-                    elevator.FloorPress(floor);
-                else if (input == QUIT)
-                    Console.WriteLine("Exiting...");
-                else
-                    Console.WriteLine("The floor you provided is invalid...please try again!");
+                DestinationFloor:
+                    Console.WriteLine("Which floor are you going to?");
+                    input = Console.ReadLine();
+                    if (Int32.TryParse(input, out Destination))
+                    {
+                        if(Destination> Flrs || Destination < 1 ||Destination==Flr)
+                        {
+                            Console.WriteLine("Invalid Destination Floor Selection.Destination Floor must not be your current floor and must not be greater than {0}",Flrs);
+                            goto DestinationFloor;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Elevator ID: {0}",SelectedElevator);
+                            Elevator Elv = new Elevator(SelectedElevator, MaxNumberOfFloors);
+                            Elv.Call(Destination,CurrentFloor);
+                            Elv.FloorPress(Destination);
+                        }
+                    }
+                    else if (input == QUIT)
+                    {
+                        Console.WriteLine("Exiting...");
+                    }
+                    else
+                    {
+                        Console.WriteLine("The floor you provided is invalid...please try again!");
+                    }
             }
         }
     }
-
-
-    
 }
