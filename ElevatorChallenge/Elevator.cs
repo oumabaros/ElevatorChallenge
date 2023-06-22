@@ -9,7 +9,7 @@ namespace ElevatorChallenge
 {
     public class Elevator
     {
-        private bool[] FloorReady { get; set; }
+        private bool[] ReadyState { get; set; }
         public int CurrentFloor = 1;
         public int TopFloor { get; set; }
         public ElevatorState Status = ElevatorState.Idle;
@@ -24,7 +24,7 @@ namespace ElevatorChallenge
         }
         public Elevator(int Id,int NumberOfFloors = 10)
         {
-            FloorReady = new bool[NumberOfFloors + 1];
+            ReadyState = new bool[NumberOfFloors + 1];
             TopFloor = NumberOfFloors;
             ElevatorId = Id;
             Status = ElevatorState.Idle;
@@ -42,7 +42,7 @@ namespace ElevatorChallenge
             {
                 Status = ElevatorState.Idle;
                 CurrentFloor = currFloor;
-                FloorReady[floor] = false;
+                ReadyState[floor] = false;
                 Console.WriteLine("Elevator: {0} being called to floor {1}",elevatorId, currFloor);
                 return true;
             }
@@ -53,7 +53,7 @@ namespace ElevatorChallenge
         {
             Status = ElevatorState.Idle;
             CurrentFloor = floor;
-            FloorReady[floor] = false;
+            ReadyState[floor] = false;
             Console.WriteLine("Elevator: {0} stopped at floor {1}",elevatorId, floor);
         }
         //Method for elevator going down.
@@ -61,7 +61,7 @@ namespace ElevatorChallenge
         {
             for (int i = CurrentFloor; i >= 1; i--)
             {
-                if (FloorReady[i])
+                if (ReadyState[i])
                 {
                     Console.WriteLine("Elevator: {0} descending to floor number: {1}",elevatorId, floor);
                     Status = ElevatorState.Down;
@@ -82,7 +82,7 @@ namespace ElevatorChallenge
         {
             for (int i = CurrentFloor; i <= TopFloor; i++)
             {
-                if (FloorReady[i])
+                if (ReadyState[i])
                 {
                     Status = ElevatorState.Up;
                     Console.WriteLine("Elevator: {0} ascending to floor number {1}: ",elevatorId, floor);
@@ -112,7 +112,7 @@ namespace ElevatorChallenge
                 return;
             }
 
-            FloorReady[floor] = true;
+            ReadyState[floor] = true;
 
             switch (Status)
             {
