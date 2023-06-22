@@ -30,7 +30,7 @@ namespace ElevatorChallenge
             Status = ElevatorState.Idle;
             CurrentFloor = 1;
         }
-               
+        //Call elevator       
         public bool Call(int floor,int currFloor,int elevatorId)
         {
             if (floor > TopFloor||floor<1)
@@ -48,7 +48,7 @@ namespace ElevatorChallenge
             }
             
         }
-
+        //Method to halt elavator
         private void Halt(int floor,int elevatorId)
         {
             Status = ElevatorState.Idle;
@@ -56,7 +56,7 @@ namespace ElevatorChallenge
             FloorReady[floor] = false;
             Console.WriteLine("Elevator: {0} stopped at floor {1}",elevatorId, floor);
         }
-
+        //Method for elevator going down.
         private void Down(int floor, int elevatorId)
         {
             for (int i = CurrentFloor; i >= 1; i--)
@@ -77,7 +77,7 @@ namespace ElevatorChallenge
             Status = ElevatorState.Idle;
             Console.WriteLine("Waiting..");
         }
-
+        //Method for elevator going up
         private void Up(int floor, int elevatorId)
         {
             for (int i = CurrentFloor; i <= TopFloor; i++)
@@ -98,12 +98,12 @@ namespace ElevatorChallenge
             Status = ElevatorState.Idle;
             Console.WriteLine("Waiting..");
         }
-
+        //Method when destination floor=current floor.
         void MoveNot()
         {
             Console.WriteLine("That's our current floor");
         }
-
+        //Main method for elevator actions(calls MoveNot,Up,Down or Halt).
         public void InitiateMove(int floor,int elevatorId)
         {
             if (floor > TopFloor)

@@ -14,8 +14,6 @@ namespace ElevatorChallenge
             int Destination;
             int Flrs=1;
             string FloorInput;
-            string PeopleWaitingInput;
-            int PeopleWaiting;
             Elevator Elvtr;
             Floor Fl = new Floor();
             int NumberOfElevators=1;
@@ -25,20 +23,24 @@ namespace ElevatorChallenge
             int SelectedElevator=1;
             int MaxNumberOfFloors=1;
             int CurrentFloor = 1;
+            string input = "";
             List<Elevator> Elvtrs=new List<Elevator>();
             
+            //Prompt for number of elavators.
             Console.WriteLine("How many elevators does the building have?");
             ElevatorInput = Console.ReadLine();
 
             if (Int32.TryParse(ElevatorInput, out NumberOfElevators))
             {
             Start:
+                //Prompt for number of floors.
                 Console.WriteLine("How many floors does the building have?");
                 FloorInput = Console.ReadLine();
                 if (Int32.TryParse(FloorInput, out Flrs))
                 {
                     MaxNumberOfFloors = Flrs;
                     Random rn=new Random();
+                    //Set Floor IDs and Randomly set number of people waiting on each floor to a maximum of 20.
                     for (int i = 0; i < Flrs; i++)
                     {
                         int people = rn.Next(20);
@@ -55,7 +57,7 @@ namespace ElevatorChallenge
                     Console.Clear();
                     goto Start;
                 }
-
+                //Randomly set number of people in each elevator to a maximum of ElevatorCapacity(10)
                 Random rnd = new Random();
                 for (int i = 1; i < NumberOfElevators+1; i++){
                     Elvtr = new Elevator(i,Flrs);
@@ -65,14 +67,7 @@ namespace ElevatorChallenge
                 }
                 RandomizeSelection(Elvtrs, Flrs);
             }
-            
-            string input="";
-
-            //StartFloor:
-                
-                
-            
-
+            //Prompt for current floor, elevator number and destination floor. Press "q" to quit.           
             while (input != QUIT)
             {
                 StartFloor:
@@ -132,12 +127,14 @@ namespace ElevatorChallenge
                         }
                         else
                         {
+                            //Perform elevator actions (move up,down or halt)
                             Elevator Elv= Elvtrs.Where(a=>a.ElevatorId==SelectedElevator).FirstOrDefault();
                             Elv.PeopleInElevator++;
                             Elv.Call(Destination,CurrentFloor,SelectedElevator);
                             Elv.InitiateMove(Destination,SelectedElevator);
                             CurrentFloor=Destination;
                             Flr = Destination;
+                            //Print results to console.
                             foreach (Elevator el in Elvtrs)
                             {
                                 Console.Write("Elevator Number: {0}", el.ElevatorId);
@@ -167,6 +164,7 @@ namespace ElevatorChallenge
                         
         }
 
+        //Initialize elevators by randomly spreading them among the floors.
         public static void RandomizeSelection(List<Elevator> Elvtrs,int Flrs)
         {
             Random rnd = new Random();
