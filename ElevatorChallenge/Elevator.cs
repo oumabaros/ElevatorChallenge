@@ -43,7 +43,7 @@ namespace ElevatorChallenge
                 Status = ElevatorState.Idle;
                 CurrentFloor = currFloor;
                 FloorReady[floor] = false;
-                Console.WriteLine("Elevator: {0} being called to {1}",elevatorId, floor);
+                Console.WriteLine("Elevator: {0} being called to floor {1}",elevatorId, currFloor);
                 return true;
             }
             
